@@ -21,33 +21,80 @@ import java.util.Random;
 // }
 
 class Imprime{
+  ArrayList<String> f_negativa= new ArrayList<String>();
+  ArrayList<String> f_positiva= new ArrayList<String>();
+
+  void Adiciona(){
+    this.f_negativa.add("                       PERDEU A RODADA\n..Se ferra otario.... bem ruim tu hein!!!");
+    this.f_negativa.add("                       PERDEU A RODADA\n..Carai.... nem na sorte tu manda bem!!");
+    this.f_negativa.add("                       PERDEU A RODADA\n..Desiste da vida, melhor que tu faz...");
+    this.f_negativa.add("                       PERDEU A RODADA\n..Nem tua mae gosta de ti... pc levou essa");
+    this.f_positiva.add("                       GANHOU A RODADA\n..Uau.. voce eh um guerreiro do prazer sabia?");
+    this.f_positiva.add("                       GANHOU A RODADA\n..Nosssa.. que golpe, voce eh especial!!");
+    this.f_positiva.add("                       GANHOU A RODADA\n..Na rima tu me ganha.. no SuperTrunfo se Arreganha chuuuupa pc....!");
+    this.f_positiva.add("                       GANHOU A RODADA\n..Demais, a vida pode estar ruim, mas o superTrunfo vai bem !");
+  }
+
+  void FrasesDeImpacto(boolean eh_jogador){
+    Adiciona();
+    if (eh_jogador) {
+      Collections.shuffle(f_positiva);
+      System.out.println(f_positiva.get(0));
+    }
+    else{
+      Collections.shuffle(f_negativa);
+      System.out.println(f_negativa.get(0));
+    }
+  }
+
   void Intro(){
     System.out.println("\n\n----------BEM VINDO AO SUPER TRUNFO DO PRAZER----------\n\n\n\n");
   }
+
+  void Final(ArrayList<Carta> jogador, ArrayList<Carta> compudador){
+    if (jogador.size()>compudador.size()) {
+      System.out.println("||----------------------------------------------||");
+      System.out.println("||                                              ||");
+      System.out.println("||    VOCE  EH PICA.... NINGUEM PODE CONTIGO !! ||");
+      System.out.println("||   PARABENS POR ESTA CONQUSITA NA SUA VIDA !! ||");
+      System.out.println("||                                              ||");
+      System.out.println("||----------------------------------------------||");
+    }
+    else {
+      System.out.println("||----------------------------------------------||");
+      System.out.println("||                                              ||");
+      System.out.println("||           VOCE  EH UM IMPRESTAVEL..       !! ||");
+      System.out.println("||      NASCER DE VOLTA PODE SER UMA SOLUCAO !! ||");
+      System.out.println("||                                              ||");
+      System.out.println("||----------------------------------------------||");
+    }
+  }
+
                                                       //Classe criada para visualização das jogadas/cartas
-  void SuaCarta(ArrayList<Carta> jogador_cartas, Carta jogador, Carta computador){                      //método criado para imprimir a carta de escolha da rodada
-     System.out.printf("  Voce tem %d cartas   \n\n", jogador_cartas.size());
-    System.out.println("       Sua Carta       ");
+  void CartaDeQuemComeca(Carta jogador_que_comeca, String jog_que_comeca,String ent, ArrayList<Carta> jogador_q_comeca_cartas){                      //método criado para imprimir a carta de escolha da rodada
+     System.out.printf("  %s tem %d cartas   \n",ent, jogador_q_comeca_cartas.size());
+    System.out.printf("       %s       \n\n", jog_que_comeca);
     System.out.println("||-------------------||");
     System.out.println("||   SUPER TRUNFO    ||");
     System.out.println("||-------------------||");
     System.out.println("|| Pleasure Warriors ||");
     System.out.println("||-------------------||");
     System.out.println("||-------------------||");
-     System.out.printf("||Inteligencia: %d   ||\n", jogador.itg);
+     System.out.printf("||Inteligencia: %d   ||\n", jogador_que_comeca.itg);
      System.out.println("||-------------------||");
-     System.out.printf("||Agilidade   : %d   ||\n", jogador.agl);
+     System.out.printf("||Agilidade   : %d   ||\n", jogador_que_comeca.agl);
      System.out.println("||-------------------||");
-     System.out.printf("||Stamina     : %d   ||\n", jogador.sta);
+     System.out.printf("||Stamina     : %d   ||\n", jogador_que_comeca.sta);
      System.out.println("||-------------------||")  ;
-     System.out.printf("||Forca       : %d   ||\n", jogador.frc);
+     System.out.printf("||Forca       : %d   ||\n", jogador_que_comeca.frc);
      System.out.println("||-------------------||");
      System.out.println("||-------------------||");
     System.out.println("|| Pleasure Warriors ||");
     System.out.println("||-------------------||\n\n");
   }
 
-  void Compara(Carta jogador, Carta computador){                   //método criado para verificação da carta da rodada do jogador e computador, respectivamente
+  void Compara(Carta jogador, ArrayList<Carta> jogador_bar, Carta computador, ArrayList<Carta> computador_bar){                   //método criado para verificação da carta da rodada do jogador e computador, respectivamente
+      System.out.printf("   Voce tem %d cartas                 Computador tem %d cartas\n",jogador_bar.size(), computador_bar.size());
       System.out.println("       Sua Carta                        Computador      ");
       System.out.println("||-------------------||          ||-------------------||");
       System.out.println("||   SUPER TRUNFO    ||          ||   SUPER TRUNFO    ||");
@@ -74,17 +121,63 @@ class Valida{
   public static Scanner op = new Scanner(System.in);
   public static int a_jogador;
   public static int a_computador;
+  public static int escolha;
+  Imprime imp= new Imprime();
+  ArrayList<Carta> cemiterio=new ArrayList<Carta>() ;
 
-  public static boolean Jogada(Carta jogador, Carta computador){
-    int escolha;
-     do {
-       System.out.println("\n\nEscolha seu melhor atributo para vencer esta rodada:\n");
-       System.out.println("Inteligencia, Digite   1");
-       System.out.println("Agilidade,    Digite   2");
-       System.out.println("Stamina,      Digite   3");
-       System.out.println("Forca,        Digite   4\n");
-       escolha = op.nextInt();
-     } while (escolha<1 || escolha>4);
+  //   void Eh_empate(boolean eh_jogador, ArrayList<Carta> jogador,ArrayList<Carta> computador, int[] vetor_pos){
+  //     escolha=DefineAtributo(eh_jogador,jogador.get(vetor_pos[0]), computador.get(vetor_pos[1]));
+  //
+  //     int[] vetor_computador={computador.get(vetor_pos[1]).itg, computador.get(vetor_pos[1]).agl, computador.get(vetor_pos[1]).sta, computador.get(vetor_pos[1]).frc};
+  //     int[] vetor_jogador={jogador.get(vetor_pos[0]).itg, jogador.get(vetor_pos[0]).agl, jogador.get(vetor_pos[0]).sta, jogador.get(vetor_pos[0]).frc};
+  //
+  //     if (vetor_computador[escolha]==vetor_jogador[escolha]) {
+  //       System.out.println("\n\nDEU EMPATE, SITUACAO SE RESOLVE NA PROXIMA JOGADA\n\n");
+  //       cemiterio.add(jogador.get(vetor_pos[0]));
+  //       cemiterio.add(computador.get(vetor_pos[1]));
+  //       jogador.remove(vetor_pos[0]);
+  //       compudador.remove(vetor_pos[1]);
+  //       Eh_empate(eh_jogador, jogador, computador, vetor_pos);
+  //     }
+  //
+  // }
+
+  public static int DefineAtributo(boolean eh_jogador, Carta jogador, Carta computador){
+    int[] vetor_computador={computador.itg, computador.agl, computador.sta, computador.frc};
+    int[] vetor_jogador={jogador.itg, jogador.agl, jogador.sta, jogador.frc};
+    int[] compara= {0,0};
+    a_jogador=0;
+    a_computador=0;
+
+
+    if (eh_jogador) {
+      do {
+        System.out.println("\n\nEscolha seu melhor atributo para vencer esta rodada:\n");
+        System.out.println("Inteligencia, Digite   1");
+        System.out.println("Agilidade,    Digite   2");
+        System.out.println("Stamina,      Digite   3");
+        System.out.println("Forca,        Digite   4\n");
+        escolha = op.nextInt();
+        System.out.println("\n\n");
+      } while (escolha<1 || escolha>4);
+      return escolha;
+    }
+    else{
+      for (int x=0;x<vetor_computador.length ;x++ ) {         //Loop para verificar maior atributo da máquina
+        if (vetor_computador[x]>a_computador) {
+          a_computador=vetor_computador[x];                 //Guarda maior atributo da máquina
+          a_jogador=x;                                      //Guarda  atributo do joagador na posição concorrente
+        }
+        }
+        Escolha_Computador(a_jogador);             //Método para informar qual atributo computador escolheu
+        return a_jogador;
+    }
+  }
+
+
+  public static boolean Jogada_Jogador(boolean eh_jogador, Carta jogador, Carta computador){
+
+     escolha=DefineAtributo(eh_jogador,jogador, computador);
 
      if (escolha==1) {
         a_jogador=jogador.itg;
@@ -107,22 +200,73 @@ class Valida{
 
   }
 
+  public  static void Escolha_Computador(int atr){
+    System.out.println("\n******************************************\n");
+    if (atr==0) {
+      System.out.printf("\nComputador escolheu o atributo INTELIGENCIA\n");
+    }
+    else if (atr==1) {
+      System.out.printf("\nComputador escolheu o atributo AGILIDADE\n");
+    }
+    else if (atr==2) {
+      System.out.printf("\nComputador escolheu o atributo STAMINA\n");
+    }
+    else{
+      System.out.printf("\nComputador escolheu o atributo FORCA\n");
+    }
+    System.out.println("\n******************************************\n\n");
+    System.out.println("Digite qualquer numero para comparar as cartas da rodada\n\n");
+    escolha = op.nextInt();
+    System.out.println("\n\n");// Para dar espaço entre informações
+  }
+
+  public static boolean Jogada_Computador(boolean eh_jogador,Carta jogador, Carta computador){
+    int[] vetor_computador={computador.itg, computador.agl, computador.sta, computador.frc};
+    int[] vetor_jogador={jogador.itg, jogador.agl, jogador.sta, jogador.frc};
+    int[] compara= {0,0};
+    a_jogador=0;
+    a_computador=0;
+
+    for (int x=0;x<vetor_computador.length ;x++ ) {         //Loop para verificar maior atributo da máquina
+      if (vetor_computador[x]>a_computador) {
+        a_computador=vetor_computador[x];                 //Guarda maior atributo da máquina
+        a_jogador=x;                                      //Guarda  atributo do joagador na posição concorrente
+      }
+      }
+      Escolha_Computador(a_jogador);             //Método para informar qual atributo computador escolheu
+
+      return eh_maior(vetor_jogador[a_jogador], a_computador);         //retorna false se computaror venceu rodada e true se jogador venceu
+  }
+
   public static boolean eh_maior(int a_jogador, int a_computador){
       return a_jogador>a_computador;
   }
 
-  void AlteraQtdCartas(boolean jogador_comeca, ArrayList<Carta> jogador, ArrayList<Carta> computador, int cont){
-    if (jogador_comeca) {
-      System.out.println("Voce venceu esta rodada");
-      jogador.add(computador.get(cont));
-      computador.remove(computador.get(cont));
+  public int[] AlteraQtdCartas(boolean eh_jogador, ArrayList<Carta> jogador, ArrayList<Carta> computador, int[] vetor_pos){
+    if (eh_jogador) {
+      imp.FrasesDeImpacto(eh_jogador);
+      System.out.println("\n\n");
+      jogador.add(computador.get(vetor_pos[1]));
+      computador.remove(computador.get(vetor_pos[1]));
+      vetor_pos[0]++;                             //Pula para próxima carta apenas se vencer
+      if (computador.size()==vetor_pos[1]) {
+        vetor_pos[1]=0;
+      }
+      System.out.println("Digite qualquer numero para continuar");
+      return vetor_pos;
     }
     else {
-      System.out.println("Se fudeu...  computador levou essa...\n\n");
-      computador.add(jogador.get(cont));
-      jogador.remove(jogador.get(cont));
+      imp.FrasesDeImpacto(eh_jogador);
+      System.out.println("\n\n");
+      computador.add(jogador.get(vetor_pos[0]));
+      jogador.remove(jogador.get(vetor_pos[0]));
+      vetor_pos[1]++;                                  //Pula para próxima carta apenas se vencer
+      if (jogador.size()==vetor_pos[0]) {
+        vetor_pos[0]=0;
+      }
+      System.out.println("Digite qualquer numero para continuar");
+      return vetor_pos;
     }
-    System.out.println("Digite qualquer numero para continuar");
   }
 
   public static boolean Par_Impar(int escolha, int resultado){            //verfica se deu par ou impar
@@ -139,18 +283,18 @@ class Valida{
   public static void Msg_Par_impar(int resultado, boolean verif){
       if (resultado%2==0) {
         if(verif) {
-          System.out.printf("%d, eh par, voce comeca !", resultado);
+          System.out.printf("\n\n%d, eh par, voce comeca !", resultado);
         }
         else{
-          System.out.printf("%d, eh par, computador comeca !", resultado);
+          System.out.printf("\n\n%d, eh par, computador comeca !", resultado);
         }
       }
       else{
         if(verif) {
-          System.out.printf("%d, eh impar, voce comeca !", resultado);
+          System.out.printf("\n\n%d, eh impar, voce comeca !", resultado);
         }
         else {
-          System.out.printf("%d, eh impar, computador comeca !", resultado);
+          System.out.printf("\n\n%d, eh impar, computador comeca !", resultado);
         }
       }
   }
@@ -180,7 +324,7 @@ class Baralho {
   }
 
   void DistribuiCartas(ArrayList<Carta>  jogador, ArrayList<Carta> computador){
-    for (int i = 0; i < (this.baralho.size())-16; i++) {
+    for (int i = 0; i < (this.baralho.size())-16; i++) { //Alternativamente poderis incremento poderia ser i+2
       jogador.add(baralho.get(i));
       computador.add(baralho.get(i+16));
     }
@@ -190,7 +334,7 @@ class Baralho {
 
 
 class Rodada{
-  int numero;
+  int numero=0;
   Imprime imp=new Imprime();                       //Ojeto que traz informações visuais sobre andamento do jogo
   Valida  ck=new Valida();                      //Ojeto que faz validações par andamento do jogo
   boolean eh_jogador;                           // 0 se computador ganhou par impar, 1 se jogador.
@@ -201,7 +345,7 @@ class Rodada{
     int    parimpar;
 
     do {
-      System.out.printf("Par ou impar para definir quem inicia o jogo:\nDigite 0 para 'Par' ou 1 para 'Impar' !\n\n");
+      System.out.printf("\n\nPar ou impar para definir quem inicia o jogo:\nDigite 0 para 'Par' ou 1 para 'Impar' !\n\n");
       parimpar= var.nextInt();                             //recebe solicitação de par e impar do usuário
     } while (parimpar<0 || parimpar>1);
 
@@ -215,21 +359,38 @@ class Rodada{
 
   void IniciaPartida(ArrayList<Carta> jogador, ArrayList<Carta> computador){
     imp.Intro();
-    int cont=0;
-    boolean jogador_comeca;
+    int[] vetor_pos={0,0} ;    //primeiro posicao jogador, segundo computador
+    int pos=0;
     Scanner pause = new Scanner(System.in);
     int stop;
+    String comp="Computador";
+    String joga="Sua Carta";
+    String vc="Voce";
+    String pc="Pc";
 
-    do {
-      imp.SuaCarta(jogador,jogador.get(cont), computador.get(cont));
-      jogador_comeca=ck.Jogada(jogador.get(cont), computador.get(cont));
-      imp.Compara(jogador.get(cont), computador.get(cont));
-      ck.AlteraQtdCartas(jogador_comeca, jogador, computador, cont);
+    while (jogador.size()>0 && computador.size()>0) {
+      System.out.printf("Essa eh a rodada %d\n\n", numero+1);
+      numero++;
+      if (this.eh_jogador) {                                  //Valida qual carta ira aparcer
+        imp.CartaDeQuemComeca(jogador.get(vetor_pos[0]),joga,vc, jogador);
+      }
+      // else{
+      //   imp.CartaDeQuemComeca(computador.get(pos),comp,pc, computador);  // De cara esta condição apresentaria a carta do computador... porém.. caso fosse um jogo o adversário não teria acesso as informações, por isso foi definido deixar esta informação oculta
+      // }
+      // ck.Eh_empate(this.eh_jogador,jogador, computador, vetor_pos);
+      if (this.eh_jogador) {
+        this.eh_jogador=ck.Jogada_Jogador(this.eh_jogador,jogador.get(vetor_pos[0]), computador.get(vetor_pos[1]));
+      }
+      else {
+        this.eh_jogador=ck.Jogada_Computador(this.eh_jogador,jogador.get(vetor_pos[0]), computador.get(vetor_pos[1]));
+      }
+
+      imp.Compara(jogador.get(vetor_pos[0]),jogador, computador.get(vetor_pos[1]), computador);
+      vetor_pos=ck.AlteraQtdCartas(this.eh_jogador, jogador, computador, vetor_pos);
       stop= pause.nextInt();
       System.out.println("\n\n");
-      cont++;
-    } while (jogador.size()>0 || computador.size()>0);
-
+    }
+    imp.Final(jogador, computador);
   }
 }
 
